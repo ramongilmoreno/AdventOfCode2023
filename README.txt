@@ -11,5 +11,27 @@ Quick start guide
  
   In each directory, there is a ./run.sh command to solve the challenge:
 
-    ./run.sh
- 
+    $ ./run.sh
+
+
+System description:
+
+  Developed on Mac:
+
+    $ uname -mprv
+    21.6.0 Darwin Kernel Version 21.6.0: Fri Sep 15 16:17:23 PDT 2023; root:xnu-8020.240.18.703.5~1/RELEASE_X86_64 x86_64 i386
+
+  Installed tools:
+
+    $ bash --version
+
+      GNU bash, version 3.2.57(1)-release (x86_64-apple-darwin21)
+      Copyright (C) 2007 Free Software Foundation, Inc.
+
+    $ awk --version
+
+      awk version 20200816
+
+    $ python3 --version
+
+      Python 3.9.6
