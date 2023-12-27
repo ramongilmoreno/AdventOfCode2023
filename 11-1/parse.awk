@@ -3,12 +3,15 @@ BEGIN {
   print "Begin"
 }
 {
+  if (!expansion) {
+    expansion = 2
+  }
   galaxies_rows++
-  galaxies_row[galaxies_rows] = 2
+  galaxies_row[galaxies_rows] = expansion
   galaxies_columns = NF
   for (i = 1; i <= NF; i++) {
     if (!galaxies_column[i]) {
-      galaxies_column[i] = 2
+      galaxies_column[i] = expansion
     }
     if ($i == "\#") {
       galaxies_count++

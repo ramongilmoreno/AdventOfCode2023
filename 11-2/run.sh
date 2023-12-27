@@ -1,6 +1,6 @@
 #!/bin/bash
 
-f () { cat $1 | awk -f parse.awk -v expansion=$2 | sed "s/^/    /g"; }
+f () { cat $1 | awk -f ../11-1/parse.awk -v expansion=$2 | sed "s/^/    /g"; }
 echo Example with 2
 f ../11-1/example.txt 2
 echo Example with 10
