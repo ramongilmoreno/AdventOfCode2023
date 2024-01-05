@@ -1,7 +1,7 @@
 import sys
 
 def log (x, end = "\n"):
-  print(x, end = end)
+  # print(x, end = end)
   sys.stdout.flush()
   pass
 
@@ -90,7 +90,15 @@ def move (beam):
   d = beam[2]
   c = beam[3]
   new_value = beam[4] + get(x, y)
+
+  # Find an old value
+  #
+  # Just for the log: this didn't work on the input.txt large problem (though
+  # smallers were OK)... It returned 1000 instead of 980... Unsure why. Leaving
+  # the previous implementation.
+  # old_value = min(filter(lambda j: j != None, [get_value(x, y, d, i) for i in range(c, max_steps)]), default = None)
   old_value = get_value(x, y, d, c) 
+
   if old_value == None or new_value < old_value:
     # Unvisited in this direction or smaller value
     set_value(x, y, d, c, new_value)
