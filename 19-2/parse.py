@@ -57,11 +57,18 @@ log(f"Workflow {workflows}")
 
 def steps_for_target (target):
   r = []
+  if target == "in":
+    return r
   for workflow_name in workflows:
     workflow = workflows[workflow_name]
-    if next((condition for condition in workflow if condition["target"] == target), None) != None:
-      for condition in workflow:
+    add = False
+    for i in range(len(workflow), 0, -1):
+      condition = workflow[i - 1]
+      if condition["target"] == target:
+        add = True
+      if add:
         r.append(condition)
+    if add:
       r.extend(steps_for_target(workflow_name))
   return r
 
@@ -124,7 +131,7 @@ for o in all_options():
   log(f"Agenda {agenda}")
 
   while len(agenda) > 0:
-    log(f'Agenda {agenda}')
+    # log(f'Agenda {agenda}')
     # Process each item
     r = []
     for i in agenda:
@@ -132,12 +139,12 @@ for o in all_options():
       workflow = workflows[i[0]]
       skip = False
       for j in range(len(workflow)):
-        log(f'Processing rule {j}') 
+        # log(f'Processing rule {j}') 
         if not skip:
           s = workflow[j]
           r2 = s["function"](part)
-          if r2 != None:
-            log(f"Applied workflow {i[0]}, rule {j} to part {part} -> {r2}")
+          # if r2 != None:
+            # log(f"Applied workflow {i[0]}, rule {j} to part {part} -> {r2}")
           if r2 == 'A':
             acc += part["size"]
             skip = True
