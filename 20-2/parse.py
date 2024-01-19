@@ -1,4 +1,6 @@
 import sys
+import math
+
 from enum import Enum
 
 def log (x, end = "\n"):
@@ -164,10 +166,11 @@ print(" " + ']')
 print("" + '}')
 print("")
 
-# Brute force attempt
-print("Brute force...")
 found = False
 count = 0
+tj = modules["tj"]
+keys = tj.inputs.keys()
+keys_values = {}
 while not found:
 
   count += 1
@@ -179,6 +182,18 @@ while not found:
     source = get_module(signal[0]) 
     pulse = signal[1]
     target = get_module(signal[2])
+
+    # Find lest common multiple of pulses getting to "tj" node
+    for i in keys:
+      if tj.inputs[i] == Pulse.High:
+        if not i in keys_values:
+          keys_values[i] = count
+          print(f"Found {count} for {i}, values {keys_values}")
+    # print(f"{keys} and {keys_values}")
+    if len(keys) == len(keys_values.values()):
+      print(f'Answer (least common multiple): {math.lcm(*keys_values.values())}')
+      exit(0)
+
     if pulse == Pulse.Low and target.name == "rx":
       print(f"Quit at count {count}")
       found = True
@@ -189,5 +204,5 @@ while not found:
       log(f"  Agenda after: {agenda}")
 
 acc = count
-print(f'Answer: {acc}')
+print(f'Answer (brute force): {acc}')
 
