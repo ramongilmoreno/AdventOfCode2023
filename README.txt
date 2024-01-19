@@ -1,4 +1,12 @@
 Advent of code 2023
+===================
+
+Web site and login
+
+  https://adventofcode.com/2023
+
+  Use Google account to log in.
+
 
 Quick start guide
 
