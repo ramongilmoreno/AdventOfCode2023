@@ -3,7 +3,7 @@ import functools
 from ast import literal_eval
 
 def log (x, end = "\n"):
-  # print(x, end = end)
+  print(x, end = end)
   sys.stdout.flush()
   pass
 
@@ -65,7 +65,6 @@ def print_field (visited):
             log(get(l, j), end="")
       log("")
 
-memo = {}
 def once (acc, item):
   # log(f'Once for acc {acc}, item {item}')
   # Try north, south, east and west
@@ -75,27 +74,62 @@ def once (acc, item):
       acc.add(i)
   return acc
 
+memo = {}
+memo_it = {}
+memo_history = {}
+memo_history_values = {}
+
+def add_to_memo_history (block_coords, index, values):
+  k = key(block_coords)
+  if not k in memo_history:
+    memo_history[k] = []
+    memo_history_values[k] = []
+  memo_history[k].append(index)
+  memo_history_values[k].append(values)
+
 # for i in range(26501365):
-for i in range(500):
+for i in range(1000):
   if i % 100 == 0:
     print(f'Run {i}')
     sys.stdout.flush()
   new_current = {}
   for j in current.items():
     origin = literal_eval(j[0])
-    values = key(sorted(list(j[1])))
-    result = None
-    if values in memo:
-      result = memo[values]
-    else:
-      result = functools.reduce(once, j[1], set())
-      memo[values] = result
-    for k in result:
-      add_to_cluster(new_current, k, origin)
+
+    # Detect repetitions
+    repetition = False
+    if j[0] in memo_history:
+      history = memo_history[j[0]]
+      l = len(history)
+      repeat_times = 1
+      if l >= (3 * repeat_times):
+        if history[l - 0 - 1] == history[l - 2 - 1] and history[l - 0 - 1] == history[l - 4 - 1]:
+          memo_history[j[0]] = [history[l - 1 - 1], history[l - 0 - 1], history[l - 1 - 1]] * repeat_times
+          history_values = memo_history_values[j[0]]
+          memo_history_values[j[0]] = [history_values[l - 1 - 1], history_values[l - 0 - 1], history_values[l - 1 - 1]] * repeat_times
+          new_current[j[0]] = history_values[-2]
+          repetition = True
+    if not repetition: 
+      values = key(sorted(list(j[1])))
+      result = None
+      iteration_number = i
+      if values in memo:
+        result = memo[values]
+        iteration_number = memo_it[values]
+      else:
+        result = functools.reduce(once, j[1], set())
+        memo[values] = result
+        memo_it[values] = i
+      filtered = set(filter(lambda x: x[0] >= 0 and x[0] < width and x[1] >= 0 and x[1] < height, result))
+      add_to_memo_history(origin, iteration_number, filtered)
+      for k in result:
+        add_to_cluster(new_current, k, origin)
 
   current = new_current
   # log(f'After {current}')
   # print_field(current)
+  # log(f'Sorted history {memo_history}')
+  # print(f'Iteration {i} : {functools.reduce(lambda acc, x: acc + len(x), current.values(), 0)}')
 
 print(f'Answer: {functools.reduce(lambda acc, x: acc + len(x), current.values(), 0)}')
 
