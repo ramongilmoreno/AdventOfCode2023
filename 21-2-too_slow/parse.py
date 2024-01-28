@@ -78,6 +78,7 @@ memo = {}
 memo_it = {}
 memo_history = {}
 memo_history_values = {}
+alternating = {}
 
 def add_to_memo_history (block_coords, index, values):
   k = key(block_coords)
@@ -88,7 +89,7 @@ def add_to_memo_history (block_coords, index, values):
   memo_history_values[k].append(values)
 
 # for i in range(26501365):
-for i in range(1000):
+for i in range(500):
   if i % 100 == 0:
     print(f'Run {i}')
     sys.stdout.flush()
@@ -96,18 +97,25 @@ for i in range(1000):
   for j in current.items():
     origin = literal_eval(j[0])
 
-    # Detect repetitions
+    # Locate alternating
     repetition = False
-    if j[0] in memo_history:
+    if j[0] in alternating:
+      # print(f"Alternating {alternating[j[0]]}")
+      new_current[j[0]] = alternating[j[0]][i % 2]
+      repetition = True
+    # Detect repetitions
+    elif j[0] in memo_history:
       history = memo_history[j[0]]
       l = len(history)
-      repeat_times = 1
-      if l >= (3 * repeat_times):
-        if history[l - 0 - 1] == history[l - 2 - 1] and history[l - 0 - 1] == history[l - 4 - 1]:
-          memo_history[j[0]] = [history[l - 1 - 1], history[l - 0 - 1], history[l - 1 - 1]] * repeat_times
+      if l >= 3:
+        if history[l - 0 - 1] == history[l - 2 - 1]:
           history_values = memo_history_values[j[0]]
-          memo_history_values[j[0]] = [history_values[l - 1 - 1], history_values[l - 0 - 1], history_values[l - 1 - 1]] * repeat_times
-          new_current[j[0]] = history_values[-2]
+          if i % 2 == 0:
+            alternating[j[0]] = [ history_values[l - 1 - 1], history_values[l - 0 - 1] ]
+          else:
+            alternating[j[0]] = [ history_values[l - 0 - 1], history_values[l - 1 - 1] ]
+          new_current[j[0]] = alternating[j[0]][i % 2]
+          memo_history[j[0]] = None
           repetition = True
     if not repetition: 
       values = key(sorted(list(j[1])))
